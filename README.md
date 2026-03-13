@@ -3,9 +3,12 @@
 This is a demonstration of an AI Pharmacy Fulfillment Assistant utilizing the **Gemini Live API** for real-time multimodal interaction (audio/video) and the **Google ADK 2.0 Graph Agent** for backend tool orchestration.
 
 ## Architecture
-- **Frontend**: A vanilla HTML/JS web interface that captures the user's webcam and microphone and streams it over WebSockets.
-- **Backend**: A Flask server (`app.py`) that acts as a bridge. It receives the WebRTC media stream over WebSockets and forwards it to the Gemini Live API.
-- **Agent Backend**: A Google ADK 2.0 Agent (`agents/agent.py`) configured as a tool for Gemini. When Gemini extracts the text from a physical order shown to the camera, it calls the tool. The ADK Graph Agent parses the order and determines the inventory aisle and temperature requirements, returning the routing script for Gemini to speak aloud.
+- **Frontend**: A vanilla HTML/JS web interface that captures the user's webcam and microphone and streams it over WebSockets. The UI dynamically generates visual components, such as interactive medicine checklists and Google Maps route widgets, perfectly synchronized with exactly when the agent calls backend tools.
+- **Backend**: A Flask/Quart server (`app.py`) that acts as a bidirectional bridge. It receives the WebRTC media stream over WebSockets and forwards it to the Gemini Live API.
+- **Agent Backends**: Google ADK 2.0 Agents (e.g. `agents/root_agent.py`, `agents/pathfinder_agent.py`) configured as robust tools for Gemini.
+    - When Gemini detects a physical barcode on the camera stream, the system instantly triggers `scan_barcode`, silences the agent, and displays a red laser animation.
+    - An interactive fulfillment checklist widget is presented, requiring user clicks.
+    - Once confirmed, the Pathfinder agent calls Google Maps to calculate the delivery route and renders an inline map in the chat interface.
 
 ## Prerequisites
 - Python 3.10+
@@ -21,13 +24,14 @@ This is a demonstration of an AI Pharmacy Fulfillment Assistant utilizing the **
 
 2. **Install the required dependencies using `uv`:**
    ```bash
-   uv add quart google-genai pydantic python-dotenv google-adk
+   uv add quart google-genai pydantic python-dotenv google-adk googlemaps
    ```
 
 3. **Configure your Environment Variables:**
-   Create a `.env` file in the root of `Cymbal_operation` and add your Gemini API Key:
+   Create a `.env` file in the root of `Cymbal_operation` and add your API keys:
    ```env
    GEMINI_API_KEY="AIzaSyYourApiKeyHere..."
+   GOOGLE_MAPS_API_KEY="AIzaSyYourGoogleMapsApiKeyHere..."
    ```
 
 ## Running the Application
@@ -48,7 +52,8 @@ This is a demonstration of an AI Pharmacy Fulfillment Assistant utilizing the **
 
 1. Click **"Connect & Start Live API"**.
 2. Allow your browser to access your **Camera** and **Microphone**.
-3. The AI (Cymbal) will introduce itself.
-4. Write an order on a piece of paper or open a note on your phone (e.g., "Insulin", "Creon").
-5. Hold the order up to your webcam so it is clearly visible and tell Cymbal: *"Here is my order."*
-6. Cymbal will read the screen, trigger the backend ADK Graph Agent to look up the inventory locations, and read the fulfillment instructions back to you.
+3. Cymbal, the AI pharmacy assistant, will introduce itself.
+4. Hold a simulated order barcode ticket up to your webcam.
+5. Cymbal will instantly scan the barcode, stop talking, and pull up an interactive medicine fulfillment checklist.
+6. Click the buttons on the screen to confirm you've added the required items to the package.
+7. Cymbal will calculate the delivery route using the Google Maps distance matrix, render a map on your screen, and ask for confirmation before concluding the order.
