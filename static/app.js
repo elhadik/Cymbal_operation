@@ -411,6 +411,54 @@ startBtn.addEventListener('click', async () => {
                     window._pendingWidgetDrop = true;
                 }
                 return;
+            } else if (msg.type === 'pathfinder_map') {
+                console.log("Received pathfinder map data:", msg.distance);
+                const mapData = msg;
+                
+                // The user specifically requested the map widget be placed inside the "text box" (transcriptBox)
+                // and not on the side panel, and they want the actual map restored.
+                const transcriptBox = document.getElementById('transcript-box');
+                const widgetBubble = document.createElement('div');
+                widgetBubble.className = 'message model fade-in';
+                widgetBubble.style.width = '100%';
+                widgetBubble.style.maxWidth = '100%';
+                
+                widgetBubble.innerHTML = `
+                    <div class="message-title">Cymbal Ordering System</div>
+                    <div class="message-content">
+                        <h4 style="margin-top: 0;">Order Delivery Route</h4>
+                        <iframe width="100%" height="250" style="border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 1rem;" loading="lazy" src="https://www.google.com/maps/embed/v1/directions?key=${mapData.api_key}&origin=Cymbal&destination=Hackensack+Meridian+Health+Palisades+Medical+Center"></iframe>
+                        <div style="font-weight: bold; margin-bottom: 1rem; color: #1e293b; display: flex; align-items: center; gap: 8px;">
+                            <span>🚗</span> <span>Distance: ${mapData.distance}</span>
+                        </div>
+                        <button id="map-confirm-btn" onclick="window.acknowledgeMap(this)" style="width: 100%; padding: 0.75rem; background: #3b82f6; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
+                            Confirm Delivery Route
+                        </button>
+                    </div>
+                `;
+                
+                // Immediately append it so it is visible in the chat log
+                transcriptBox.appendChild(widgetBubble);
+                transcriptBox.scrollTop = transcriptBox.scrollHeight;
+                
+                window.acknowledgeMap = function(btnElement) {
+                    btnElement.disabled = true;
+                    btnElement.innerText = "✓ Route Confirmed";
+                    btnElement.style.background = "#22c55e";
+                    
+                    // Send confirmation message back to Gemini silently so it concludes the order
+                    if (ws && ws.readyState === WebSocket.OPEN) {
+                        ws.send(JSON.stringify({
+                            clientContent: {
+                                turns: [{
+                                    parts: [{text: "User clicked: Confirm Delivery Route. Please conclude the order now."}]
+                                }]
+                            }
+                        }));
+                    }
+                };
+                
+                return;
             }
 
             // Handle ADK transcribed/forwarded model content

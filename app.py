@@ -158,9 +158,11 @@ async def ws():
     async def forward_ui_signals():
         from agents.root_agent import get_ui_queue
         ui_queue = get_ui_queue()
+        print(f"--> [DEBUG] forward_ui_signals queue ID: {id(ui_queue)}")
         try:
             while True:
                 msg = await ui_queue.get()
+                print(f"--> [DEBUG] forward_ui_signals got message: {msg['type']}")
                 await websocket.send(json.dumps(msg))
         except asyncio.CancelledError:
             pass
@@ -174,7 +176,7 @@ async def ws():
         asyncio.create_task(process_messages()),
         asyncio.create_task(forward_ui_signals())
     ]
-    done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_EXCEPTION)
+    done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
     
     for task in pending:
         task.cancel()
