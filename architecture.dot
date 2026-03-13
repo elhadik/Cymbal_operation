@@ -1,0 +1,83 @@
+digraph CymbalArchitecture {
+    fontname="Helvetica,Arial,sans-serif"
+    node [fontname="Helvetica,Arial,sans-serif"]
+    edge [fontname="Helvetica,Arial,sans-serif"]
+    
+    graph [
+        rankdir = "LR"
+        bgcolor = "#f9f9f9"
+        compound = true
+    ]
+    
+    node [
+        shape = "rect"
+        style = "filled,rounded"
+        fillcolor = "#ffffff"
+        color = "#333333"
+        linewidth = 1
+    ]
+    
+    edge [
+        color = "#666666"
+        fontsize = 10
+    ]
+
+    subgraph cluster_frontend {
+        label = "Frontend";
+        style = "filled";
+        fillcolor = "#e6f3ff";
+        color = "#0066cc";
+        Frontend [label="Web App\n(HTML/JS)"];
+    }
+
+    subgraph cluster_backend {
+        label = "Backend";
+        style = "filled";
+        fillcolor = "#e6ffe6";
+        color = "#00cc00";
+        Backend [label="Quart Server\n(app.py)"];
+        ADK [label="ADK Runner"];
+    }
+
+    subgraph cluster_agents {
+        label = "Multiple Agents";
+        style = "filled";
+        fillcolor = "#fff2e6";
+        color = "#ff8c00";
+        
+        RootAgent [label="Root Agent\n(root_agent.py)\n\nTools:\n- scan_barcode"];
+        OrderAgent [label="Order Agent\n(order_agent.py)\n\nTools:\n- get_order_details"];
+        PathfinderAgent [label="Pathfinder Agent\n(pathfinder_agent.py)\n\nTools:\n- run_pathfinder"];
+        ConcludeAgent [label="Conclude Agent\n(conclude_agent.py)\n\nTools:\n- conclude_order"];
+    }
+
+    subgraph cluster_external {
+        label = "External Services";
+        style = "filled";
+        fillcolor = "#ffe6e6";
+        color = "#cc0000";
+        VertexAI [label="Gemini Live API\n(Vertex AI)"];
+        MapsAPI [label="Google Maps API"];
+    }
+
+    Frontend -> Backend [label="WebSocket\n(Media/UI Events)", color="#0066cc"];
+    Backend -> Frontend [label="WebSocket\n(Media/UI Signals)", color="#0066cc"];
+
+    Backend -> ADK [label="Forward Stream", color="#00cc00"];
+    ADK -> RootAgent [label="Route Tool Calls", color="#00cc00"];
+    
+    RootAgent -> OrderAgent [label="Delegate", style="dashed", color="#ff8c00"];
+    RootAgent -> PathfinderAgent [label="Delegate", color="#ff8c00"];
+    RootAgent -> ConcludeAgent [label="Delegate", style="dashed", color="#ff8c00"];
+
+    RootAgent -> ADK [label="Return Tool Results", color="#00cc00"];
+    OrderAgent -> ADK [label="Return Tool Results", style="dashed", color="#00cc00"];
+    PathfinderAgent -> ADK [label="Return Tool Results", color="#00cc00"];
+    ConcludeAgent -> ADK [label="Return Tool Results", style="dashed", color="#00cc00"];
+
+    ADK -> VertexAI [label="Bidi Generate\nContent", color="#cc0000"];
+    VertexAI -> ADK [label="Stream Output", color="#cc0000"];
+
+    PathfinderAgent -> MapsAPI [label="HTTP Request\n(Pathfinder)", color="#cc0000"];
+    MapsAPI -> PathfinderAgent [label="JSON Response", color="#cc0000"];
+}
