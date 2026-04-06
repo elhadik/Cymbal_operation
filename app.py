@@ -21,8 +21,8 @@ dotenv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
 load_dotenv(dotenv_path)
 
 # Verify environment
-GCP_PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "elhadik-sandbox-2")
-GCP_LOCATION = os.environ.get("GCP_LOCATION", "us-central1")
+GOOGLE_CLOUD_PROJECT = os.environ.get("GOOGLE_CLOUD_PROJECT", "backend-operational-1682")
+GOOGLE_CLOUD_LOCATION = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
 
 app = Quart(__name__)
 

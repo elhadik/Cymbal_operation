@@ -50,10 +50,10 @@ uv pip install -r requirements.txt
 3. **Configure your Environment Variables:**
    Create a `.env` file in the root of `Cymbal_operation` and add your configuration variables:
    ```env
-   GEMINI_API_KEY="AIzaSyYourApiKeyHere..."
+   GOOGLE_GENAI_USE_VERTEXAI=true
+   GOOGLE_CLOUD_PROJECT="your-gcp-project-id"
+   GOOGLE_CLOUD_LOCATION="us-central1"
    GOOGLE_MAPS_API_KEY="AIzaSyYourGoogleMapsApiKeyHere..."
-   GCP_PROJECT_ID="your-gcp-project-id"
-   GCP_LOCATION="us-central1"
    GEMINI_MODEL="gemini-2.5-flash-native-audio-latest"
    ```
 
