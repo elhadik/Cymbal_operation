@@ -31,6 +31,9 @@ Or with `uv`:
 uv pip install -r requirements.txt
 ```
 
+> [!NOTE]
+> This project relies on a specific local build of `google-adk` located in the `libs/` directory. The `requirements.txt` file references it relatively.
+
 ### Installation from Scratch
 
 1. **Set up the project folder:**
