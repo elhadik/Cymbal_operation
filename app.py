@@ -199,4 +199,6 @@ async def generate_barcode():
     return jsonify({"barcode": barcode_number})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
+

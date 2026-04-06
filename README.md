@@ -17,7 +17,21 @@ This is a demonstration of an AI Pharmacy Fulfillment Assistant utilizing the **
 - Python 3.10+
 - [`uv`](https://github.com/astral-sh/uv) (Recommended for dependency management)
 
-## Installation from Scratch
+## Installation
+
+### Using requirements.txt
+
+If you are using `requirements.txt` to install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+Or with `uv`:
+```bash
+uv pip install -r requirements.txt
+```
+
+### Installation from Scratch
 
 1. **Set up the project folder:**
    ```bash
@@ -29,6 +43,9 @@ This is a demonstration of an AI Pharmacy Fulfillment Assistant utilizing the **
    ```bash
    uv add quart google-genai pydantic python-dotenv google-adk googlemaps
    ```
+   *Note: `google-adk` is the package for Google ADK 2.0.*
+
+
 
 3. **Configure your Environment Variables:**
    Create a `.env` file in the root of `Cymbal_operation` and add your configuration variables:

@@ -1,0 +1,9 @@
+quart
+python-dotenv
+google-genai
+pydantic
+googlemaps
+websockets
+playwright
+google-adk
+
